@@ -1,7 +1,5 @@
 import {Component} from 'react'
-
 import {v4} from 'uuid'
-
 import PasswordItem from './component/PasswordItem'
 
 import './App.css'
@@ -28,13 +26,11 @@ class App extends Component {
 
   deleteItem = id => {
     const {passwordList} = this.state
-    const filteredPasswordList = passwordList.filter(
-      eachItem => eachItem.id !== id,
-    )
+    const filteredPasswordList = passwordList.filter(each => each.id !== id)
     this.setState({passwordList: filteredPasswordList})
   }
 
-  renderAuthButton = () => {
+  renderPasswordList = () => {
     const {passwordList, searchInput, isActive} = this.state
     const searchResults = passwordList.filter(eachItem =>
       eachItem.website.toLowerCase().includes(searchInput.toLowerCase()),
@@ -79,45 +75,47 @@ class App extends Component {
     )
   }
 
-  onSubmitForm = event => {
+  onAddPassword = event => {
     event.preventDefault()
-    const backgroundColor = Math.ceil(
-      Math.random() * initialContainerBackgroundClassNames.length - 1,
-    )
-
-    console.log(backgroundColor)
-
-    const initialBackgroundColorClassName = `initial-container ${initialContainerBackgroundClassNames[backgroundColor]}`
-
     const {website, username, password} = this.state
-    const newContactList = {
+
+    const initialBgClassName =
+      initialContainerBackgroundClassNames[
+        Math.ceil(Math.random() * initialContainerBackgroundClassNames.length)
+      ]
+
+    const initialBgClassNames = `initial-container ${initialBgClassName}`
+
+    const addPassword = {
       id: v4(),
       website,
       username,
       password,
-      initialClassName: initialBackgroundColorClassName,
+      initialBackGround: initialBgClassNames,
     }
     this.setState(prevState => ({
-      passwordList: [...prevState.passwordList, newContactList],
+      passwordList: [...prevState.passwordList, addPassword],
       website: '',
       username: '',
       password: '',
     }))
   }
 
-  onToggleActive = () => {
-    this.setState(prevState => ({isActive: !prevState.isActive}))
+  onChangeSearchInput = event => {
+    this.setState({
+      searchInput: event.target.value,
+    })
   }
 
-  onChangeSearchInput = event => {
-    this.setState({searchInput: event.target.value})
+  onToggleActive = () => {
+    this.setState(prevState => ({isActive: !prevState.isActive}))
   }
 
   onChangeWebsite = event => {
     this.setState({website: event.target.value})
   }
 
-  onChangeInput = event => {
+  onChangeUsername = event => {
     this.setState({username: event.target.value})
   }
 
@@ -126,101 +124,104 @@ class App extends Component {
   }
 
   render() {
-    const {searchInput, website, username, password, passwordList} = this.state
+    const {searchInput, passwordList} = this.state
 
+    const {website, username, password} = this.state
     return (
-      <div className="app-container">
+      <div className="bg-container">
         <img
-          src="https://assets.ccbp.in/frontend/react-js/password-manager-logo-img.png"
+          className="password-manager-logo"
           alt="app logo"
-          className="app-logo"
+          src="https://assets.ccbp.in/frontend/react-js/password-manager-logo-img.png"
         />
         <div className="card-container">
-          <div className="top-card-container">
+          <div className="top-card">
             <img
+              className="password-manager-small"
+              alt="password manager"
               src="https://assets.ccbp.in/frontend/react-js/password-manager-sm-img.png"
-              alt="password manager"
-              className="password-manager-small-logo"
             />
-            <img
-              src="https://assets.ccbp.in/frontend/react-js/password-manager-lg-img.png"
-              alt="password manager"
-              className="password-manager-large"
-            />
-            <form className="form-container" onSubmit={this.onSubmitForm}>
-              <h1 className="password-heading">Add New Password</h1>
+            <form className="form-container" onSubmit={this.onAddPassword}>
+              <h1 className="add-password-heading">Add New Password</h1>
               <div className="input-container">
                 <img
-                  src="https://assets.ccbp.in/frontend/react-js/password-manager-website-img.png"
-                  alt="website"
                   className="icons"
+                  alt="website"
+                  src="https://assets.ccbp.in/frontend/react-js/password-manager-website-img.png"
                 />
                 <input
                   onChange={this.onChangeWebsite}
                   placeholder="Enter Website"
-                  className="input-element"
                   value={website}
-                  type="text"
-                />
-              </div>
-              <div className="input-container">
-                <img
-                  src="https://assets.ccbp.in/frontend/react-js/password-manager-username-img.png"
-                  alt="username"
-                  className="icons"
-                />
-                <input
-                  onChange={this.onChangeInput}
-                  placeholder="Enter Username"
                   className="input-element"
-                  value={username}
                   type="text"
                 />
               </div>
               <div className="input-container">
                 <img
-                  src="https://assets.ccbp.in/frontend/react-js/password-manager-password-img.png"
-                  alt="password"
                   className="icons"
+                  alt="username"
+                  src="https://assets.ccbp.in/frontend/react-js/password-manager-username-img.png"
                 />
                 <input
-                  onChange={this.onChangePassword}
+                  placeholder="Enter Username"
+                  onChange={this.onChangeUsername}
+                  value={username}
+                  className="input-element"
+                  type="text"
+                />
+              </div>
+              <div className="input-container">
+                <img
+                  className="icons"
+                  alt="password"
+                  src="https://assets.ccbp.in/frontend/react-js/password-manager-password-img.png"
+                />
+                <input
                   placeholder="Enter Password"
+                  onChange={this.onChangePassword}
+                  value={password}
                   className="input-element"
                   type="password"
-                  value={password}
                 />
               </div>
               <div className="button-container">
-                <button type="submit" className="add-button">
+                <button className="add-button" type="submit">
                   Add
                 </button>
               </div>
             </form>
+            <div>
+              <img
+                className="password-manager-large"
+                alt="password manager"
+                src="https://assets.ccbp.in/frontend/react-js/password-manager-lg-img.png"
+              />
+            </div>
           </div>
-          <div className="bottom-card-container">
-            <div className="bottom-navbar">
-              <div className="password-count-container">
-                <h1 className="bottom-password-heading">Your Passwords</h1>
-                <p className="password-count">{passwordList.length}</p>
+          <div className="bottom-card">
+            <div className="bottom-container-nav">
+              <div className="passwords-count-container">
+                <h1 className="your-passwords">Your Passwords</h1>
+                <p className="passwords-number">{passwordList.length}</p>
               </div>
               <div className="search-container">
                 <img
-                  src="https://assets.ccbp.in/frontend/react-js/password-manager-search-img.png"
-                  alt="search"
                   className="icons"
+                  alt="search"
+                  placeholder="Search"
+                  src="https://assets.ccbp.in/frontend/react-js/password-manager-search-img.png"
                 />
                 <input
                   onChange={this.onChangeSearchInput}
-                  placeholder="Search"
-                  className="input-element"
-                  type="text"
                   value={searchInput}
+                  className="search-input-element"
+                  type="search"
                 />
               </div>
             </div>
             <hr className="hr-line" />
-            <div className="show-password-container">
+            <div className="checkbox-icon">
               <input
                 onClick={this.onToggleActive}
                 className="check-box"
@@ -231,7 +232,7 @@ class App extends Component {
                 Show Passwords
               </label>
             </div>
-            <div>{this.renderAuthButton()}</div>
+            <div>{this.renderPasswordList()}</div>
           </div>
         </div>
       </div>
